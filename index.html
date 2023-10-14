@@ -40,7 +40,7 @@
 		maxZoom: 19,
 	}).addTo(map);
 
-	axios.get('http://localhost:8000/nomika_prosopa_updated.csv')
+	axios.get('https://raw.githubusercontent.com/tur11ng/greek-company-debts/master/data/nomika_prosopa_updated.csv')
 		.then(function(response) {
 			var csvData = response.data;
 			Papa.parse(csvData, {
