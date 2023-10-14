@@ -5,23 +5,47 @@
     <title>Leaflet Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"/>
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/papaparse/papaparse.min.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
     <style>
         #map {
             position: fixed;
-            top: 50px;
+            top: 0;
             bottom: 0;
             left: 0;
             right: 0;
         }
+
+        .search {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            width: auto;
+        }
     </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
 </head>
 <body>
-<progress id="progressBar" value="0" max="100" style="width: 100%;">Loading…</progress>
+<a class="github-fork-ribbon" href="https://github.com/tur11ng/greek-companies-public-debt" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
 <div id="map"></div>
+
+<div style="display: flex; justify-content: center;">
+    <div class="input-group mb-3" style="width: 80%;">
+        <input type="text" id="searchBar" class="form-control" placeholder="Search..." style="border-radius: 24px 0 0 24px;">
+        <div class="input-group-append">
+            <button id="searchButton" class="btn btn-outline-secondary" type="button" style="border-radius: 0 24px 24px 0;">Search</button>
+        </div>
+    </div>
+</div>
+
 <script>
 	function parseTuple(t) {
 		var items = t.replace(/^\(|\)$/g, "").split("),(");
@@ -33,7 +57,7 @@
 
 	var map = L.map('map').setView([51.505, -0.09], 2);
 	var markers = L.markerClusterGroup();
-	var progressBar = document.getElementById('progressBar');
+	var allMarkers = [];
 
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
@@ -46,7 +70,7 @@
 			Papa.parse(csvData, {
 				header: true,
 				complete: function(results) {
-					results.data.forEach(function(row, index) {
+					allMarkers = results.data.map(function(row) {
 						try {
 							var lat = parseTuple(row["Syntetagmenes"])[0][0];
 							var lon = parseTuple(row["Syntetagmenes"])[0][1];
@@ -55,14 +79,10 @@
 								var marker = L.marker([lat, lon]);
 								marker.bindPopup(details);
 								markers.addLayer(marker);
+								return marker;
 							}
-
-							progressBar.value = Math.round((index / results.data.length) * 100);
-						} catch(e) {
-						}
-					});
-
-					progressBar.value = 100;
+						} catch(e) {}
+					}).filter(Boolean);
 
 					map.addLayer(markers);
 					map.fitBounds(markers.getBounds());
@@ -72,6 +92,27 @@
 		.catch(function(error) {
 			console.log(error);
 		});
+
+	document.getElementById("searchButton").addEventListener("click", function() {
+		updateMarkers();
+	});
+
+	document.getElementById("searchBar").addEventListener("keypress", function(e) {
+		if (e.key === "Enter") {
+			updateMarkers();
+		}
+	});
+
+	function updateMarkers() {
+		var value = document.getElementById("searchBar").value;
+
+		markers.clearLayers();
+		allMarkers.filter(function(marker) {
+			return marker.getPopup().getContent().toLowerCase().includes(value.toLowerCase());
+		}).forEach(function(marker) {
+			markers.addLayer(marker);
+		});
+	}
 </script>
 </body>
 </html>
