@@ -2,10 +2,14 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Leaflet Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Greek companies' public debts</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -21,23 +25,21 @@
             left: 0;
             right: 0;
         }
-
-        .search {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            width: auto;
+        .github-fork-ribbon.right-bottom:before {
+            background-color: #090;
         }
     </style>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
 </head>
 <body>
-<a class="github-fork-ribbon" href="https://github.com/tur11ng/greek-companies-public-debt" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+<div style="position: fixed; bottom: 0; left: 0; z-index: 1000;">
+    <a href="https://hits.seeyoufarm.com">
+        <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ftur11ng.github.io%2Fgreek-companies-public-debts%2F&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Hits&edge_flat=false"/>
+    </a>
+</div>
+<a class="github-fork-ribbon right-bottom fixed" href="https://github.com/tur11ng/greek-companies-public-debts/" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
 <div id="map"></div>
 
-<div style="display: flex; justify-content: center;">
+<div class="search" style="display: flex; justify-content: center;">
     <div class="input-group mb-3" style="width: 80%;">
         <input type="text" id="searchBar" class="form-control" placeholder="Search..." style="border-radius: 24px 0 0 24px;">
         <div class="input-group-append">
